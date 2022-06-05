@@ -1,0 +1,241 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>A demo of HLO</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-03-09"><meta name="DC.source" content="SHLO.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>A demo of HLO</h1><!--introduction--><p>Coded by Panpan Li, Ji Pei, Yalan Wen; reviewed by Ling Wang revised on 2017-12-8 1. This is a simple demo of HLO [1]. It is just tested by a simple function which is y = x1^2 + x2^2. 2.This code defines the population size in 'popsize', number of design variables in 'Dim', number of runs in 'runtimes', maximum number of generations in 'Gmax',current generation in 't'and bit number for each variable is 'bit'. 3.'Xmin' and 'Xmax' are the lower and upper bounds of the design variables. 4.'pr'is the probability of random learning ,the values of (pi-pr) and (1-pi) represents the probabilities of performing individual learning and social learning, respectiely. 5.'IKD' is the individual knowledge database since the size of IKD=1 here; 'SKD' is the social knowledge database and the size of SKD is 1 in this demo. 6.For complicated problems, it highly recommends to introudce the re-learning operator given in [2] to obtain much better results. 7.HLO is sensitive to the parameters p_r and pi. A simple adaptive strategy is given in [3] to relieve the effort of parameter setting.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">References:</a></li><li><a href="#2">Code starts</a></li><li><a href="#3">Initial population</a></li><li><a href="#4">Evaluate fitness function and initial the IKD and SKD</a></li><li><a href="#5">Initial the SKD</a></li><li><a href="#6">Generation Starts</a></li><li><a href="#8">Evaluate fitness function</a></li><li><a href="#9">Evaluate IKD</a></li><li><a href="#10">Evaluate SKD</a></li></ul></div><h2 id="1">References:</h2><p>1.Ling Wang, Haoqi Ni, Ruixin Yang, Minrui Fei, Wei Ye. A Simple Human Learnibg Optimization Algorithm. Communications in Computer and Information Science. 2014 v462: 56-65 2.Ling Wang, Ruixin Yang, Haoqi Ni, Wei Ye, Minrui Fei, and Panos M. Pardalos. A Human Learning Optimization Algorithm and Its Application to Multi-dimensional Knapsack Problems. Applied Soft Computing. 2015, 34: 736-743 3.Ling Wang, Haoqi Ni, Ruixin Yang, Panos M. Pardalos, Xin Du, Minrui Fei. An Adaptive Simplified Human Learning Optimization Algorithm. Information Sciences. 2015, 320: 126-139</p><h2 id="2">Code starts</h2><pre class="codeinput">clear;
+clc;
+format <span class="string">long</span>;
+popsize = 50;
+runtimes = 1;           <span class="comment">%Number of runs</span>
+Gmax = 3000;            <span class="comment">%Max number of generations - stopping criteria</span>
+Dim = 2;                <span class="comment">%Variable number</span>
+bit = 32;               <span class="comment">%Bits numbers</span>
+m = bit * Dim;          <span class="comment">%Individual lenth</span>
+Xmax = 100;             <span class="comment">%Vaiable range</span>
+Xmin = -100;            <span class="comment">%Vaiable range</span>
+p_r = 5.0 / m;
+p_i = 0.85 + 2.0 / m;
+
+load <span class="string">data.txt</span>;  <span class="comment">%Transfer the data of the F1:Shifted Sphere Function in CEC2005</span>
+
+<span class="keyword">for</span> cn=1:runtimes
+</pre><h2 id="3">Initial population</h2><pre class="codeinput">    popus = inipop(popsize,m);
+    Rpopus = B2R(popus,Dim,Xmax,Xmin);                      <span class="comment">%Transform binary to real code</span>
+</pre><h2 id="4">Evaluate fitness function and initial the IKD and SKD</h2><pre class="codeinput">    Fits = Evfit(Rpopus,popsize,o);                         <span class="comment">% Fitness function evaulation</span>
+    IKDfits = Fits;                                         <span class="comment">% the best individual fitness</span>
+    IKD = popus;
+</pre><pre class="codeoutput error">Undefined function or variable 'o'.
+
+Error in SHLO (line 52)
+    Fits = Evfit(Rpopus,popsize,o);                         % Fitness function evaulation 
+</pre><h2 id="5">Initial the SKD</h2><pre class="codeinput">    [arrange,position] = sort(IKDfits,1);
+    SKDfit = IKDfits(position(1,1),1);
+    SKD = IKD(position(1,1),:);                           <span class="comment">% the best individual (binary)</span>
+</pre><h2 id="6">Generation Starts</h2><pre class="codeinput">    <span class="keyword">for</span> t = 1:Gmax
+</pre><pre class="codeinput">        <span class="keyword">for</span> i = 1:popsize
+            <span class="keyword">for</span> j = 1:m
+             prob = rand;
+                <span class="keyword">if</span>  prob &lt; p_r &amp;&amp; prob &gt; 0                     	<span class="comment">%random learning</span>
+                    <span class="keyword">if</span> rand &lt; 0.5
+                        popus(i,j) = 1;
+                    <span class="keyword">else</span>
+                        popus(i,j) = 0;
+                    <span class="keyword">end</span>
+                <span class="keyword">elseif</span> prob &gt;= p_r &amp;&amp; prob &lt; p_i                <span class="comment">%individual learning</span>
+                    popus(i,j) = IKD(i,j);
+                <span class="keyword">elseif</span> prob &gt;= p_i  &amp;&amp; prob &lt; 1               	<span class="comment">%social learning</span>
+                    popus(i,j) = SKD(1,j);
+                <span class="keyword">end</span>
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+</pre><h2 id="8">Evaluate fitness function</h2><pre class="codeinput">        Rpopus = B2R(popus,Dim,Xmax,Xmin);                	<span class="comment">%transform binary-string to real variables</span>
+        Fits = Evfit(Rpopus,popsize,o);                  	<span class="comment">%Fitness function evaulation</span>
+</pre><h2 id="9">Evaluate IKD</h2><pre class="codeinput">        <span class="keyword">for</span> i = 1:popsize
+            <span class="keyword">if</span> Fits(i) &lt; IKDfits(i)
+                IKDfits(i) = Fits(i);
+                IKD(i,:) = popus(i,:);
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+</pre><h2 id="10">Evaluate SKD</h2><pre class="codeinput">        [arrange,postion] = sort(IKDfits,1);
+        <span class="keyword">if</span> arrange(1,1) &lt; SKDfit   	<span class="comment">% when the best fitness of this generation is better than gloabl best fitness, then update</span>
+            SKDfit = arrange(1,1);
+            SKD = IKD(postion(1,1),:);
+        <span class="keyword">end</span>
+        <span class="keyword">if</span> (mod(t,200))==0
+        fprintf(<span class="string">'the %d round\n'</span>,t);
+        <span class="keyword">end</span>
+</pre><pre class="codeinput">    <span class="keyword">end</span>
+    fprintf(<span class="string">'runtimes = %d\n the best value is:'</span>,cn);
+    disp(SKDfit);
+</pre><pre class="codeinput"><span class="keyword">end</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% A demo of HLO
+% Coded by Panpan Li, Ji Pei, Yalan Wen; reviewed by Ling Wang
+% revised on 2017-12-8 
+% 1. This is a simple demo of HLO [1]. It is just tested by a simple function
+% which is y = x1^2 + x2^2.
+% 2.This code defines the population size in 'popsize', number of design 
+% variables in 'Dim', number of runs in 'runtimes', maximum number of
+% generations in 'Gmax',current generation in 't'and bit number for each
+% variable is 'bit'.
+% 3.'Xmin' and 'Xmax' are the lower and upper bounds of the design variables.
+% 4.'pr'is the probability of random learning ,the values of (pi-pr) and
+% (1-pi) represents the probabilities of performing individual learning and
+% social learning, respectiely.
+% 5.'IKD' is the individual knowledge database since the size of IKD=1 here;
+% 'SKD' is the social knowledge database and the size of SKD is 1 in this demo.
+% 6.For complicated problems, it highly recommends to introudce the re-learning
+% operator given in [2] to obtain much better results.
+% 7.HLO is sensitive to the parameters p_r and pi. A simple adaptive strategy 
+% is given in [3] to relieve the effort of parameter setting.
+
+%% References:
+% 1.Ling Wang, Haoqi Ni, Ruixin Yang, Minrui Fei, Wei Ye. A Simple Human Learnibg Optimization Algorithm. 
+% Communications in Computer and Information Science. 2014 v462: 56-65
+% 2.Ling Wang, Ruixin Yang, Haoqi Ni, Wei Ye, Minrui Fei, and Panos M. Pardalos. A Human Learning Optimization 
+% Algorithm and Its Application to Multi-dimensional Knapsack Problems. Applied Soft Computing. 2015, 34: 736-743
+% 3.Ling Wang, Haoqi Ni, Ruixin Yang, Panos M. Pardalos, Xin Du, Minrui Fei. An Adaptive Simplified Human 
+% Learning Optimization Algorithm. Information Sciences. 2015, 320: 126-139
+
+%% Code starts
+clear;
+clc;
+format long;
+popsize = 50;            
+runtimes = 1;           %Number of runs
+Gmax = 3000;            %Max number of generations - stopping criteria
+Dim = 2;                %Variable number
+bit = 32;               %Bits numbers
+m = bit * Dim;          %Individual lenth
+Xmax = 100;             %Vaiable range
+Xmin = -100;            %Vaiable range           
+p_r = 5.0 / m;               
+p_i = 0.85 + 2.0 / m;          
+
+load data.txt;  %Transfer the data of the F1:Shifted Sphere Function in CEC2005
+
+for cn=1:runtimes
+%% Initial population 
+    popus = inipop(popsize,m);    
+    Rpopus = B2R(popus,Dim,Xmax,Xmin);                      %Transform binary to real code
+    
+%% Evaluate fitness function and initial the IKD and SKD
+    Fits = Evfit(Rpopus,popsize,o);                         % Fitness function evaulation 
+    IKDfits = Fits;                                         % the best individual fitness    
+    IKD = popus;           
+    
+%% Initial the SKD
+    [arrange,position] = sort(IKDfits,1);               
+    SKDfit = IKDfits(position(1,1),1);                    
+    SKD = IKD(position(1,1),:);                           % the best individual (binary)
+    
+%% Generation Starts
+    for t = 1:Gmax
+        for i = 1:popsize
+            for j = 1:m
+             prob = rand;
+                if  prob < p_r && prob > 0                     	%random learning
+                    if rand < 0.5
+                        popus(i,j) = 1;
+                    else
+                        popus(i,j) = 0;
+                    end
+                elseif prob >= p_r && prob < p_i                %individual learning
+                    popus(i,j) = IKD(i,j);
+                elseif prob >= p_i  && prob < 1               	%social learning
+                    popus(i,j) = SKD(1,j);   
+                end
+            end
+        end
+%% Evaluate fitness function
+        Rpopus = B2R(popus,Dim,Xmax,Xmin);                	%transform binary-string to real variables
+        Fits = Evfit(Rpopus,popsize,o);                  	%Fitness function evaulation 
+%% Evaluate IKD
+        for i = 1:popsize
+            if Fits(i) < IKDfits(i)
+                IKDfits(i) = Fits(i);
+                IKD(i,:) = popus(i,:);
+            end
+        end
+%% Evaluate SKD
+        [arrange,postion] = sort(IKDfits,1);                           
+        if arrange(1,1) < SKDfit   	% when the best fitness of this generation is better than gloabl best fitness, then update
+            SKDfit = arrange(1,1);
+            SKD = IKD(postion(1,1),:);
+        end
+        if (mod(t,200))==0
+        fprintf('the %d round\n',t);
+        end
+        
+    end
+    fprintf('runtimes = %d\n the best value is:',cn);
+    disp(SKDfit);
+end
+
+##### SOURCE END #####
+--></body></html>
